@@ -4,7 +4,7 @@ public struct CardStack<Direction, ID: Hashable, Data: RandomAccessCollection, C
 where Data.Index: Hashable {
 
   @Environment(\.cardStackConfiguration) private var configuration: CardStackConfiguration
-  @State private var currentIndex: Data.Index
+  @Binding private var currentIndex: Data.Index
 
   private let direction: (Double) -> Direction?
   private let data: Data
@@ -16,6 +16,7 @@ where Data.Index: Hashable {
     direction: @escaping (Double) -> Direction?,
     data: Data,
     id: KeyPath<Data.Element, ID>,
+    currentIndex: Binding<Data.Index>,
     onSwipe: @escaping (Data.Element, Direction) -> Void,
     @ViewBuilder content: @escaping (Data.Element, Direction?, Bool) -> Content
   ) {
@@ -24,8 +25,7 @@ where Data.Index: Hashable {
     self.id = id
     self.onSwipe = onSwipe
     self.content = content
-
-    self._currentIndex = State<Data.Index>(initialValue: data.startIndex)
+    self._currentIndex = currentIndex
   }
 
   @ViewBuilder private func cardViewOrEmpty(index: Data.Index) -> some View {
@@ -76,6 +76,7 @@ extension CardStack where Data.Element: Identifiable, ID == Data.Element.ID {
   public init(
     direction: @escaping (Double) -> Direction?,
     data: Data,
+    currentIndex: Binding<Data.Index>,
     onSwipe: @escaping (Data.Element, Direction) -> Void,
     @ViewBuilder content: @escaping (Data.Element, Direction?, Bool) -> Content
   ) {
@@ -83,6 +84,7 @@ extension CardStack where Data.Element: Identifiable, ID == Data.Element.ID {
       direction: direction,
       data: data,
       id: \Data.Element.id,
+      currentIndex: currentIndex,
       onSwipe: onSwipe,
       content: content
     )
@@ -95,6 +97,7 @@ extension CardStack where Data.Element: Hashable, ID == Data.Element {
   public init(
     direction: @escaping (Double) -> Direction?,
     data: Data,
+    currentIndex: Binding<Data.Index>,
     onSwipe: @escaping (Data.Element, Direction) -> Void,
     @ViewBuilder content: @escaping (Data.Element, Direction?, Bool) -> Content
   ) {
@@ -102,6 +105,7 @@ extension CardStack where Data.Element: Hashable, ID == Data.Element {
       direction: direction,
       data: data,
       id: \Data.Element.self,
+      currentIndex: currentIndex,
       onSwipe: onSwipe,
       content: content
     )

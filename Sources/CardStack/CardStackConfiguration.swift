@@ -10,6 +10,7 @@ public struct CardStackConfiguration: EnvironmentKey {
     let cardScale: CGFloat
     let animation: Animation
     let dragDirection: DragDirection
+    let revealAnimationDelay: Double
     
     public init(
         maxVisibleCards: Int = 3,
@@ -17,7 +18,8 @@ public struct CardStackConfiguration: EnvironmentKey {
         cardOffset: CGFloat = 10,
         cardScale: CGFloat = 0.1,
         animation: Animation = .default,
-        dragDirection: DragDirection = .horizontal
+        dragDirection: DragDirection = .horizontal,
+        revealAnimationDelay: Double = 0.25
     ) {
         self.maxVisibleCards = maxVisibleCards
         self.swipeThreshold = swipeThreshold
@@ -25,6 +27,7 @@ public struct CardStackConfiguration: EnvironmentKey {
         self.cardScale = cardScale
         self.animation = animation
         self.dragDirection = dragDirection
+        self.revealAnimationDelay = revealAnimationDelay
     }
 }
 

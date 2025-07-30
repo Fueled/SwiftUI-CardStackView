@@ -2,7 +2,7 @@ import SwiftUI
 
 struct CardView<Direction, Content: View>: View {
     @Environment(\.cardStackConfiguration) private var configuration: CardStackConfiguration
-    @State private var translation: CGSize = .zero
+    private var translation: CGSize = .zero
     
     private let direction: (Double) -> Direction?
     private let isOnTop: Bool
@@ -12,11 +12,13 @@ struct CardView<Direction, Content: View>: View {
     init(
         direction: @escaping (Double) -> Direction?,
         isOnTop: Bool,
+        translation: CGSize,
         onSwipe: @escaping (Direction) -> Void,
         @ViewBuilder content: @escaping (Direction?) -> Content
     ) {
         self.direction = direction
         self.isOnTop = isOnTop
+        self.translation = translation
         self.onSwipe = onSwipe
         self.content = content
     }
@@ -25,37 +27,14 @@ struct CardView<Direction, Content: View>: View {
         GeometryReader { geometry in
             self.content(self.swipeDirection(geometry))
                 .offset(self.translation)
-                .rotationEffect(self.rotation(geometry))
-                .simultaneousGesture(self.isOnTop ? self.dragGesture(geometry) : nil)
         }
         .transition(transition)
-    }
-    
-    private func dragGesture(_ geometry: GeometryProxy) -> some Gesture {
-        DragGesture()
-            .onChanged { value in
-                self.translation = self.configuration.dragDirection.normalisedTranslation(for: value.translation)
-            }
-            .onEnded { value in
-                self.translation = self.configuration.dragDirection.normalisedTranslation(for: value.translation)
-                if let direction = self.swipeDirection(geometry) {
-                    withAnimation(self.configuration.animation) { self.onSwipe(direction) }
-                } else {
-                    withAnimation { self.translation = .zero }
-                }
-            }
     }
     
     private var degree: Double {
         var degree = atan2(translation.width, translation.height) * 180 / .pi
         if degree < 0 { degree += 360 }
         return Double(degree)
-    }
-    
-    private func rotation(_ geometry: GeometryProxy) -> Angle {
-        .degrees(
-            Double(translation.width / geometry.size.width) * 25
-        )
     }
     
     private func swipeDirection(_ geometry: GeometryProxy) -> Direction? {

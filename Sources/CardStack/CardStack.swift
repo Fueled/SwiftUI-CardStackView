@@ -83,7 +83,7 @@ where Data.Index: Hashable {
                     withAnimation {
                         self.translation = translation
                     }
-                    if let direction = self.swipeDirection(geometry) {
+                    if let direction = self.swipeDirection(geometry), currentIndex < self.data.endIndex {
                         withAnimation(self.configuration.animation) {
                             self.onSwipe(self.data[currentIndex], direction)
                             self.translation = .zero

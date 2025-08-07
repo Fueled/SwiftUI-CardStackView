@@ -84,8 +84,10 @@ where Data.Index: Hashable {
                         self.translation = translation
                     }
                     if let direction = self.swipeDirection(geometry), currentIndex < self.data.endIndex {
-                        withAnimation(self.configuration.animation) {
+                        withAnimation(self.configuration.animation.speed(1.5)) {
                             self.onSwipe(self.data[currentIndex], direction)
+                            self.translation = .init(width: -geometry.size.width, height: translation.height)
+                        } completion: {
                             self.translation = .zero
                             withAnimation(self.configuration.animation.delay(self.configuration.revealAnimationDelay)) {
                                 self.currentIndex = self.data.index(after: currentIndex)
@@ -99,7 +101,9 @@ where Data.Index: Hashable {
                         withAnimation { self.translation = .zero }
                     } else {
                         withAnimation {
-                            self.translation = .init(width: -geometry.size.width - 44, height: 0)
+                            if abs(translation.width) >= abs(geometry.size.width * self.configuration.swipeThreshold) {
+                                self.translation = .init(width: -geometry.size.width - 44, height: 0)
+                            }
                             withAnimation(self.configuration.animation.delay(self.configuration.revealAnimationDelay)) {
                                 if let interactingIndex {
                                     self.currentIndex = self.data.index(after: interactingIndex)

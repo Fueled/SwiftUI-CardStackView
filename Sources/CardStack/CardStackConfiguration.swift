@@ -1,8 +1,8 @@
 import SwiftUI
 
-public struct CardStackConfiguration: EnvironmentKey {
+public struct CardStackConfiguration: EnvironmentKey, Sendable {
     
-    public static var defaultValue = CardStackConfiguration()
+    public static let defaultValue = CardStackConfiguration()
     
     let maxVisibleCards: Int
     let swipeThreshold: Double

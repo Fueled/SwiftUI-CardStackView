@@ -1,10 +1,10 @@
-// swift-tools-version:5.1
+// swift-tools-version:6.0
 import PackageDescription
 
 let package = Package(
     name: "CardStack",
     platforms: [
-        .iOS(.v13),
+        .iOS(.v17),
         .watchOS(.v6),
         .macOS(.v10_15)
     ],
@@ -16,6 +16,6 @@ let package = Package(
     ],
     targets: [
         .target(name: "CardStack", dependencies: []),
-        .testTarget(name: "CardStackTests", dependencies: ["CardStack", "SnapshotTesting"])
+        .testTarget(name: "CardStackTests", dependencies: ["CardStack", .product(name: "SnapshotTesting", package: "swift-snapshot-testing")])
     ]
 )
